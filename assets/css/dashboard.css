@@ -1,0 +1,502 @@
+:root {
+    --mt-primary: #4f46e5;
+    --mt-primary-dark: #4338ca;
+    --mt-primary-soft: #eef2ff;
+    --mt-bg: #f3f4f8;
+    --mt-card: #ffffff;
+    --mt-border: #e9eaf2;
+    --mt-text: #0f1222;
+    --mt-muted: #6b7280;
+    --mt-income: #10b981;
+    --mt-income-soft: #e5f7f0;
+    --mt-expense: #e11d48;
+    --mt-expense-soft: #fce7ec;
+    --mt-orange: #f59e0b;
+    --mt-orange-soft: #fef3e2;
+    --mt-radius-lg: 20px;
+    --mt-radius-md: 14px;
+    --mt-radius-sm: 10px;
+}
+
+body.mt-body {
+    background: var(--mt-bg);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--mt-text);
+}
+
+/* ---------- Navbar ---------- */
+.mt-navbar {
+    background: var(--mt-card);
+    border-bottom: 1px solid var(--mt-border);
+}
+
+.mt-logo-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--mt-primary), #7c3aed);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.mt-logo-text {
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: -0.01em;
+}
+
+.mt-logo-text .mt-accent {
+    color: var(--mt-primary);
+}
+
+.mt-nav-link {
+    font-weight: 500;
+    font-size: 0.92rem;
+    color: var(--mt-muted);
+    padding: 0.5rem 0.9rem;
+    border-radius: var(--mt-radius-sm);
+    text-decoration: none;
+}
+
+.mt-nav-link.active {
+    color: var(--mt-primary);
+    background: var(--mt-primary-soft);
+}
+
+.mt-nav-link:hover {
+    color: var(--mt-primary);
+    text-decoration: none;
+}
+
+.mt-icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    border: 1px solid var(--mt-border);
+    background: var(--mt-card);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--mt-muted);
+    position: relative;
+    text-decoration: none;
+}
+
+.mt-icon-btn:hover {
+    color: var(--mt-primary);
+}
+
+.mt-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--mt-expense);
+    border: 2px solid var(--mt-card);
+}
+
+.mt-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--mt-primary-soft);
+    color: var(--mt-primary);
+    font-weight: 700;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mt-logout-btn {
+    border: 1px solid var(--mt-border);
+    background: var(--mt-card);
+    color: var(--mt-text);
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: var(--mt-radius-sm);
+    padding: 0.45rem 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    text-decoration: none;
+}
+
+.mt-logout-btn:hover {
+    border-color: var(--mt-expense);
+    color: var(--mt-expense);
+}
+
+/* ---------- Stat cards ---------- */
+.mt-card {
+    background: var(--mt-card);
+    border: 1px solid var(--mt-border);
+    border-radius: var(--mt-radius-lg);
+    box-shadow: 0 1px 2px rgba(15, 18, 34, 0.03);
+}
+
+.mt-stat-card {
+    padding: 1.5rem;
+}
+
+.mt-stat-label {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--mt-muted);
+}
+
+.mt-stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.mt-stat-value {
+    font-size: 1.9rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0.6rem 0 0.7rem;
+}
+
+.mt-pill {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+}
+
+.mt-stat-sub {
+    font-size: 0.82rem;
+    color: var(--mt-muted);
+}
+
+/* ---------- Content cards ---------- */
+.mt-section-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.1rem;
+}
+
+.mt-section-sub {
+    font-size: 0.82rem;
+    color: var(--mt-muted);
+}
+
+.mt-btn-primary {
+    background: var(--mt-primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--mt-radius-sm);
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.55rem 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    text-decoration: none;
+}
+
+.mt-btn-primary:hover {
+    background: var(--mt-primary-dark);
+    color: #fff;
+}
+
+.mt-btn-ghost-danger {
+    background: transparent;
+    border: none;
+    color: var(--mt-expense);
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    text-decoration: none;
+    padding: 0.55rem 0.4rem;
+}
+
+.mt-btn-ghost-danger:hover {
+    color: #9f1239;
+}
+
+/* ---------- Table ---------- */
+.mt-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.mt-table thead th {
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    color: var(--mt-muted);
+    font-weight: 600;
+    text-align: left;
+    padding: 0 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--mt-border);
+}
+
+.mt-table tbody td {
+    padding: 0.9rem 0.5rem;
+    border-bottom: 1px solid var(--mt-border);
+    font-size: 0.9rem;
+    vertical-align: middle;
+}
+
+.mt-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.mt-cat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    background: #f4f4f8;
+    color: var(--mt-text);
+}
+
+.mt-cat-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.mt-type-pill {
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.28rem 0.65rem;
+    border-radius: 999px;
+}
+
+.mt-type-income {
+    background: var(--mt-income-soft);
+    color: var(--mt-income);
+}
+
+.mt-type-expense {
+    background: var(--mt-expense-soft);
+    color: var(--mt-expense);
+}
+
+.mt-amount-income {
+    color: var(--mt-income);
+    font-weight: 700;
+}
+
+.mt-amount-expense {
+    color: var(--mt-expense);
+    font-weight: 700;
+}
+
+.mt-action-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    border: 1px solid var(--mt-border);
+    background: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--mt-muted);
+}
+
+.mt-action-btn:hover {
+    background: var(--mt-primary-soft);
+    color: var(--mt-primary);
+}
+
+.mt-action-btn.danger:hover {
+    background: var(--mt-expense-soft);
+    color: var(--mt-expense);
+}
+
+.mt-table-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--mt-muted);
+    padding-top: 0.9rem;
+}
+
+/* ---------- Donut chart card ---------- */
+.mt-donut-wrap {
+    position: relative;
+    max-width: 230px;
+    margin: 0 auto;
+}
+
+.mt-donut-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.mt-donut-center-label {
+    text-transform: uppercase;
+    font-size: 0.68rem;
+    letter-spacing: 0.05em;
+    color: var(--mt-muted);
+    font-weight: 600;
+}
+
+.mt-donut-center-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.mt-legend-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--mt-border);
+}
+
+.mt-legend-row:last-of-type {
+    border-bottom: none;
+}
+
+.mt-legend-name {
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.mt-legend-amount {
+    font-size: 0.78rem;
+    color: var(--mt-muted);
+}
+
+.mt-legend-pct {
+    font-size: 0.92rem;
+    font-weight: 700;
+}
+
+.mt-info-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+    color: var(--mt-muted);
+    background: var(--mt-primary-soft);
+    border-radius: var(--mt-radius-sm);
+    padding: 0.7rem 0.85rem;
+    margin-top: 0.9rem;
+}
+
+.mt-info-note svg {
+    color: var(--mt-primary);
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+}
+
+/* ---------- Page footer ---------- */
+.mt-footer {
+    border-top: 1px solid var(--mt-border);
+    padding: 1.25rem 0;
+    font-size: 0.82rem;
+    color: var(--mt-muted);
+}
+
+.mt-footer a {
+    color: var(--mt-muted);
+    text-decoration: none;
+    margin-left: 1.25rem;
+}
+
+.mt-footer a:hover {
+    color: var(--mt-primary);
+}
+
+/* ---------- Mobile nav menu ---------- */
+.mt-mobile-menu {
+    border-top: 1px solid var(--mt-border);
+    padding-top: 0.75rem;
+}
+
+.mt-mobile-menu .mt-nav-link {
+    padding: 0.65rem 0.9rem;
+}
+
+/* ---------- Responsive: compact stat cards on small screens ---------- */
+@media (max-width: 767.98px) {
+    .mt-stat-card {
+        padding: 1rem;
+    }
+
+    .mt-stat-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 9px;
+    }
+
+    .mt-stat-icon svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .mt-stat-label {
+        font-size: 0.62rem;
+    }
+
+    .mt-stat-value {
+        font-size: 1.25rem;
+        margin: 0.4rem 0 0.5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .mt-pill {
+        font-size: 0.68rem;
+        padding: 0.1rem 0.45rem;
+    }
+
+    .mt-stat-sub {
+        font-size: 0.72rem;
+    }
+}
+
+@media (max-width: 991px) {
+    .mt-footer .d-flex {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+
+    .mt-footer a {
+        margin: 0 0.6rem;
+    }
+}
+
+/* ---------- Stat card meta row: pill + label wraps cleanly ---------- */
+.mt-pill {
+    white-space: nowrap;
+}
+
+@media (max-width: 767.98px) {
+    .mt-stat-meta {
+        flex-wrap: wrap;
+        row-gap: 0.15rem;
+    }
+}
