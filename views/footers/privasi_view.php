@@ -11,13 +11,13 @@
                 <p><em>Terakhir diperbarui: <?= date('d F Y'); ?></em></p>
 
                 <h6 class="mt-4">1. Data yang Kami Kumpulkan</h6>
-                <p>Tulis penjelasan di sini.</p>
+                <p>MonTrack hanya mengumpulkan informasi dasar akun (seperti nama pengguna/username) serta catatan transaksi keuangan (tanggal, kategori, nominal, dan catatan) yang Anda masukkan secara mandiri ke dalam sistem.</p>
 
                 <h6 class="mt-4">2. Penggunaan Data</h6>
-                <p>Tulis penjelasan di sini.</p>
+                <p>Data transaksi yang Anda simpan digunakan sepenuhnya untuk menyajikan ringkasan keuangan pribadi Anda, termasuk menghitung total saldo, total pemasukan/pengeluaran, dan statistik grafik pada dashboard MonTrack. Kami tidak memperjualbelikan atau membagikan data keuangan Anda kepada pihak ketiga.</p>
 
                 <h6 class="mt-4">3. Keamanan Data</h6>
-                <p>Tulis penjelasan di sini.</p>
+                <p>Kami berkomitmen untuk menjaga keamanan data pribadi dan catatan keuangan Anda dengan menerapkan enkripsi serta proteksi standar pada database untuk mencegah akses tanpa izin.</p>
             </div>
         </div>
     </div>
