@@ -16,13 +16,13 @@ $last_updated_label = $last_updated_label ?? '-';
 $total_chart_expense = $total_chart_expense ?? array_sum($chartValues);
 
 // Palet warna berurutan untuk badge kategori & donut chart
-$mt_palette = ['#e11d48', '#f59e0b', '#4f46e5', '#10b981', '#0ea5e9', '#8b5cf6', '#ec4899', '#64748b'];
+$mt_palette = ['#059669', '#f59e0b', '#0ea5e9', '#e11d48', '#84cc16', '#8b5cf6', '#ec4899', '#64748b'];
 
 include __DIR__ . '/partials/header.php';
 ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/dashboard.css">
 
 <div class="mt-body">
