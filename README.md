@@ -101,7 +101,7 @@ money_tracker/
 
 ## 👤 Pembuat
 
-Dibuat oleh **NAMA ANDA**
+Dibuat oleh **Muhammad Eky Solehudin**
 
 - GitHub: [@muhekyudin-sudo](https://github.com/muhekyudin-sudo)
 
