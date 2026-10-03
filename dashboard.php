@@ -73,4 +73,54 @@ if (!empty($transactions)) {
     $last_updated_label = '-';
 }
 
+// 10. Ringkasan Harian (GROUP BY tanggal + GROUP_CONCAT rincian pengeluaran)
+$pdo->exec("SET SESSION group_concat_max_len = 8192"); // default 1024 bisa memotong data
+
+$stmtDaily = $pdo->prepare("
+    SELECT
+        t.transaction_date,
+        SUM(CASE WHEN t.transaction_type = 'income'  THEN t.amount ELSE 0 END) AS day_income,
+        SUM(CASE WHEN t.transaction_type = 'expense' THEN t.amount ELSE 0 END) AS day_expense,
+        GROUP_CONCAT(
+            CASE WHEN t.transaction_type = 'expense'
+                 THEN CONCAT(t.amount, '::', COALESCE(c.name, 'Tanpa kategori'))
+            END
+            ORDER BY t.id
+            SEPARATOR '||'
+        ) AS expense_detail
+    FROM transactions t
+    LEFT JOIN categories c ON t.category_id = c.id
+    WHERE t.user_id = ?
+    GROUP BY t.transaction_date
+    ORDER BY t.transaction_date DESC
+    LIMIT 30
+");
+$stmtDaily->execute([$user_id]);
+$dailyRows = $stmtDaily->fetchAll();
+
+$hari_id = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+
+$daily_summary = [];
+foreach ($dailyRows as $row) {
+    $ts = strtotime($row['transaction_date']);
+
+    // Pecah "233.00::Transportasi||344.00::Hiburan" menjadi array rincian
+    $details = [];
+    if (!empty($row['expense_detail'])) {
+        foreach (explode('||', $row['expense_detail']) as $item) {
+            [$amt, $cat] = array_pad(explode('::', $item, 2), 2, '');
+            $details[] = ['amount' => (float)$amt, 'category' => $cat];
+        }
+    }
+
+    $daily_summary[] = [
+        'day_name'   => $hari_id[(int)date('w', $ts)],
+        'date_label' => date('d', $ts) . ' ' . $bulan_id[(int)date('n', $ts)] . ' ' . date('Y', $ts),
+        'income'     => (float)$row['day_income'],
+        'expense'    => (float)$row['day_expense'],
+        'net'        => (float)$row['day_income'] - (float)$row['day_expense'],
+        'details'    => $details,
+    ];
+}
+
 require_once __DIR__ . '/views/dashboard_view.php';

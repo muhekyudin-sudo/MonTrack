@@ -13,6 +13,7 @@ $expense_pct_of_income = $expense_pct_of_income ?? 0;
 $top_category_name = $top_category_name ?? null;
 $top_category_pct = $top_category_pct ?? 0;
 $last_updated_label = $last_updated_label ?? '-';
+$daily_summary = $daily_summary ?? [];
 $total_chart_expense = $total_chart_expense ?? array_sum($chartValues);
 
 // Palet warna berurutan untuk badge kategori & donut chart
@@ -172,9 +173,75 @@ include __DIR__ . '/partials/header.php';
         </div>
 
         <div class="row g-3">
-            <!-- Tabel Riwayat Transaksi -->
-            <div class="col-lg-8">
-                <div class="mt-card p-4 h-100">
+            <div class="col-lg-8 d-flex flex-column gap-3">
+
+                <!-- Tabel Ringkasan Harian -->
+                <div class="mt-card p-4">
+                    <div class="mb-3">
+                        <div class="mt-section-title">Ringkasan Harian</div>
+                        <div class="mt-section-sub">Pemasukan, pengeluaran, dan saldo bersih per hari</div>
+                    </div>
+
+                    <div class="table-responsive mt-daily-scroll">
+                        <table class="mt-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:24%;">Tanggal &amp; Hari</th>
+                                    <th style="width:22%;">Total Pemasukan</th>
+                                    <th style="width:32%;">Total Pengeluaran &amp; Rincian</th>
+                                    <th class="text-end" style="width:22%;">Saldo Bersih</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (!empty($daily_summary)): ?>
+                                    <?php foreach ($daily_summary as $day): ?>
+                                        <tr>
+                                            <td class="align-top">
+                                                <div class="mt-daily-date"><?= htmlspecialchars($day['date_label']); ?></div>
+                                                <div class="mt-daily-day"><?= htmlspecialchars($day['day_name']); ?></div>
+                                            </td>
+
+                                            <td class="align-top <?= $day['income'] > 0 ? 'mt-amount-income' : 'text-muted'; ?>">
+                                                <?= $day['income'] > 0 ? '+ Rp ' . number_format($day['income'], 0, ',', '.') : '-'; ?>
+                                            </td>
+
+                                            <td class="align-top">
+                                                <?php if ($day['expense'] > 0): ?>
+                                                    <div class="mt-amount-expense">Rp <?= number_format($day['expense'], 0, ',', '.'); ?></div>
+                                                    <div class="mt-daily-badges d-flex flex-column align-items-start gap-1 mt-1">
+                                                        <?php foreach ($day['details'] as $d): ?>
+                                                            <span class="mt-detail-badge">
+                                                                -<?= number_format($d['amount'], 0, ',', '.'); ?>
+                                                                (<?= htmlspecialchars($d['category']); ?>)
+                                                            </span>
+                                                        <?php endforeach; ?>
+                                                    </div>
+                                                <?php else: ?>
+                                                    <span class="text-muted">-</span>
+                                                <?php endif; ?>
+                                            </td>
+
+                                            <?php
+                                            $netClass = $day['net'] > 0 ? 'mt-amount-income' : ($day['net'] < 0 ? 'mt-amount-expense' : 'text-muted');
+                                            $netSign  = $day['net'] > 0 ? '+ ' : ($day['net'] < 0 ? '- ' : '');
+                                            ?>
+                                            <td class="text-end align-top <?= $netClass; ?>">
+                                                <?= $netSign; ?>Rp <?= number_format(abs($day['net']), 0, ',', '.'); ?>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted py-4">Belum ada data harian.</td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tabel Riwayat Transaksi -->
+                <div class="mt-card p-4 flex-grow-1">
                     <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-2">
                         <div>
                             <div class="mt-section-title">Riwayat Transaksi</div>
