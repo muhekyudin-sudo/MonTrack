@@ -11,8 +11,10 @@ Aplikasi web pencatat keuangan pribadi. Catat pemasukan dan pengeluaran, kelompo
 **Untuk pengguna**
 - Registrasi dan login dengan kata sandi terenkripsi (bcrypt)
 - Dashboard ringkasan: saldo, total pemasukan, dan total pengeluaran
-- Grafik keuangan untuk memantau arus kas
-- **Ringkasan Harian**: tabel per tanggal berisi hari, total pemasukan, total pengeluaran beserta rincian per kategori, dan saldo bersih harian
+- Grafik pengeluaran per kategori untuk memantau arus kas
+- Ringkasan harian: pemasukan, pengeluaran beserta rincian per kategori, dan saldo bersih per hari
+- Tombol **Transaksi Baru** langsung di samping judul Ringkasan Harian
+- Tombol **Tampilkan semua ringkasan** dan **Tampilkan semua riwayat** untuk melihat seluruh data tanpa scroll di dalam tabel (otomatis tersembunyi jika data masih sedikit)
 - Tambah, ubah, dan hapus transaksi (pemasukan / pengeluaran)
 - Kategori transaksi yang bisa ditambahkan sendiri
 - Hapus seluruh riwayat transaksi sekaligus
@@ -63,7 +65,7 @@ money_tracker/
 
 1. **Clone repository**
 ```bash
-   git clone https://github.com/muhekyudin-sudo/NAMA-REPO.git
+   git clone https://github.com/USERNAME/REPO.git
 ```
    Letakkan folder proyek di direktori web server (misalnya `www` di Laragon atau `htdocs` di XAMPP).
 
@@ -84,33 +86,11 @@ money_tracker/
 
 ---
 
-## 📊 Ringkasan Harian
-
-Tabel yang berada tepat di atas Riwayat Transaksi pada dashboard. Data dikelompokkan per tanggal (30 hari terakhir) dengan `GROUP BY transaction_date` dan `GROUP_CONCAT()` untuk menggabungkan rincian pengeluaran pada hari yang sama.
-
-| Kolom | Keterangan |
-|---|---|
-| Tanggal & Hari | Tanggal transaksi beserta nama harinya |
-| Total Pemasukan | Jumlah seluruh pemasukan pada hari tersebut |
-| Total Pengeluaran & Rincian | Jumlah pengeluaran, dengan rincian per kategori, contoh: `-233 (Belanja)` |
-| Saldo Bersih | Pemasukan dikurangi pengeluaran pada hari tersebut |
-
-File terkait: `dashboard.php` (query), `views/dashboard_view.php` (tampilan), `assets/css/dashboard.css` (gaya `.mt-daily-*`).
-
----
-
 ## 🔐 Keamanan
 
 - Kata sandi disimpan dalam bentuk hash bcrypt (`password_hash`)
 - Query database memakai prepared statement (PDO) untuk mencegah SQL injection
 - Halaman dashboard dan admin dilindungi pengecekan sesi dan role
-
----
-
-## 📝 Catatan Perubahan
-
-**Update terbaru**
-- Menambahkan tabel Ringkasan Harian di dashboard (total pemasukan, pengeluaran dengan rincian per kategori, dan saldo bersih harian)
 
 ---
 
