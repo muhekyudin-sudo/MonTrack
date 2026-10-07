@@ -758,3 +758,58 @@ select.mt-control {
     min-width: 520px;
   }
 }
+
+/* ---------- Collapsible tables & tombol "Tampilkan semua" ---------- */
+.mt-collapsible {
+  overflow-y: auto;
+}
+
+.mt-history-scroll {
+  max-height: 420px;
+}
+
+.mt-collapsible .mt-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--mt-card);
+  z-index: 1;
+}
+
+.mt-collapsible.is-expanded {
+  max-height: none;
+  overflow-y: visible;
+}
+
+.mt-expand-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.6rem;
+  background: var(--mt-primary-soft);
+  color: var(--mt-primary);
+  border: none;
+  border-radius: var(--mt-radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.15s;
+}
+
+.mt-expand-btn[hidden] {
+  display: none;
+}
+
+.mt-expand-btn:hover {
+  filter: brightness(0.96);
+}
+
+.mt-expand-btn.is-open .mt-expand-icon {
+  transform: rotate(180deg);
+}
+
+.mt-expand-icon {
+  transition: transform 0.2s;
+}

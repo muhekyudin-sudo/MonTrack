@@ -177,12 +177,21 @@ include __DIR__ . '/partials/header.php';
 
                 <!-- Tabel Ringkasan Harian -->
                 <div class="mt-card p-4">
-                    <div class="mb-3">
-                        <div class="mt-section-title">Ringkasan Harian</div>
-                        <div class="mt-section-sub">Pemasukan, pengeluaran, dan saldo bersih per hari</div>
+                    <div class="d-flex justify-content-between align-items-start mb-3 gap-2">
+                        <div>
+                            <div class="mt-section-title">Ringkasan Harian</div>
+                            <div class="mt-section-sub">Pemasukan, pengeluaran, dan saldo bersih per hari</div>
+                        </div>
+                        <a href="add_transaction.php" class="mt-btn-primary flex-shrink-0">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Transaksi Baru
+                        </a>
                     </div>
 
-                    <div class="table-responsive mt-daily-scroll">
+                    <div class="table-responsive mt-collapsible mt-daily-scroll" id="dailyScroll">
                         <table class="mt-table">
                             <thead>
                                 <tr>
@@ -238,6 +247,14 @@ include __DIR__ . '/partials/header.php';
                             </tbody>
                         </table>
                     </div>
+
+                    <button type="button" class="mt-expand-btn" data-expand-target="dailyScroll"
+                        data-label-open="Tampilkan semua ringkasan" data-label-close="Tampilkan lebih sedikit" hidden>
+                        <span class="mt-expand-text">Tampilkan semua ringkasan</span>
+                        <svg class="mt-expand-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
                 </div>
 
                 <!-- Tabel Riwayat Transaksi -->
@@ -248,13 +265,6 @@ include __DIR__ . '/partials/header.php';
                             <div class="mt-section-sub">Daftar aktivitas keuangan dan mutasi terbaru</div>
                         </div>
                         <div class="d-flex align-items-center gap-1">
-                            <a href="add_transaction.php" class="mt-btn-primary">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                                </svg>
-                                Transaksi Baru
-                            </a>
                             <?php if (!empty($transactions)): ?>
                                 <a href="actions/transactions/process_delete_all_transactions.php"
                                     class="mt-btn-ghost-danger"
@@ -272,7 +282,7 @@ include __DIR__ . '/partials/header.php';
                         </div>
                     </div>
 
-                    <div class="table-responsive">
+                    <div class="table-responsive mt-collapsible mt-history-scroll" id="historyScroll">
                         <table class="mt-table">
                             <thead>
                                 <tr>
@@ -340,6 +350,14 @@ include __DIR__ . '/partials/header.php';
                         </table>
                     </div>
 
+                    <button type="button" class="mt-expand-btn" data-expand-target="historyScroll"
+                        data-label-open="Tampilkan semua riwayat" data-label-close="Tampilkan lebih sedikit" hidden>
+                        <span class="mt-expand-text">Tampilkan semua riwayat</span>
+                        <svg class="mt-expand-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    
                     <div class="mt-table-footer">
                         <span>Menampilkan <?= count($transactions); ?> dari <?= count($transactions); ?> transaksi</span>
                         <span>Terakhir diperbarui: <?= htmlspecialchars($last_updated_label); ?></span>
