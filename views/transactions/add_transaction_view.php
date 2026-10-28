@@ -143,5 +143,19 @@
     </footer>
 
 </div>
-
+<script>
+// Isi tanggal default dengan tanggal di perangkat pengguna (bukan tanggal server)
+(function () {
+    function setToday() {
+        var el = document.getElementById('transaction_date');
+        if (!el) return;
+        var d = new Date();
+        var m = ('0' + (d.getMonth() + 1)).slice(-2);
+        var day = ('0' + d.getDate()).slice(-2);
+        el.value = d.getFullYear() + '-' + m + '-' + day;
+    }
+    setToday();
+    window.addEventListener('pageshow', function (e) { if (e.persisted) setToday(); });
+})();
+</script>
 <?php include __DIR__ . '/../partials/footer.php'; ?>

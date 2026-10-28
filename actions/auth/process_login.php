@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/../../includes/session_init.php';
 require_once __DIR__ . '/../../config/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -14,6 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 2. Verifikasi keberadaan user dan kecocokan password hash
     if ($user && password_verify($password, $user['password'])) {
         // Login Berhasil
+        session_regenerate_id(true);
         $_SESSION['user_id']   = $user['id'];
         $_SESSION['user_name'] = $user['display_name'];
         $_SESSION['role']      = $user['role'] ?? 'user'; // Simpan role ke session
