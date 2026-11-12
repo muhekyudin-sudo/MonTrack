@@ -17,6 +17,10 @@
         <div class="alert alert-success auto-dismiss-alert">Kategori baru berhasil ditambahkan!</div>
     <?php elseif ($_GET['status'] === 'notif_sent'): ?>
         <div class="alert alert-success auto-dismiss-alert">Notifikasi berhasil dikirim ke pengguna!</div>
+    <?php elseif ($_GET['status'] === 'reset_on'): ?>
+        <div class="alert alert-success auto-dismiss-alert">Reset saldo bulanan diaktifkan. Saldo dihitung mulai tanggal 1 bulan ini.</div>
+    <?php elseif ($_GET['status'] === 'reset_off'): ?>
+        <div class="alert alert-info auto-dismiss-alert">Reset saldo bulanan dimatikan. Saldo kembali dihitung dari seluruh transaksi.</div>
     <?php endif; ?>
 
     <script>

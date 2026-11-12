@@ -15,6 +15,14 @@ $top_category_pct = $top_category_pct ?? 0;
 $last_updated_label = $last_updated_label ?? '-';
 $daily_summary = $daily_summary ?? [];
 $total_chart_expense = $total_chart_expense ?? array_sum($chartValues);
+$monthly_summary = $monthly_summary ?? [];
+$yearly_summary  = $yearly_summary ?? [];
+$summary_year    = $summary_year ?? (int)date('Y');
+$year_end        = $year_end ?? ($summary_year + 3);
+$monthly_reset   = $monthly_reset ?? 0;
+$cat_by_month    = $cat_by_month ?? [];
+$cat_start_index = $cat_start_index ?? 0;
+$bulan_full      = $bulan_full ?? ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
 // Palet warna berurutan untuk badge kategori & donut chart
 $mt_palette = ['#059669', '#f59e0b', '#0ea5e9', '#e11d48', '#84cc16', '#8b5cf6', '#ec4899', '#64748b'];
@@ -54,6 +62,7 @@ include __DIR__ . '/partials/header.php';
                     <?php if (($_SESSION['role'] ?? '') === 'admin'): ?>
                         <a href="admin_dashboard.php" class="mt-nav-link" style="color:#f59e0b;">Admin Panel</a>
                     <?php endif; ?>
+                    <?php include __DIR__ . '/partials/monthly_reset_toggle.php'; ?>
                 </div>
             </div>
 
@@ -105,6 +114,7 @@ include __DIR__ . '/partials/header.php';
                 <?php if (($_SESSION['role'] ?? '') === 'admin'): ?>
                     <a href="admin_dashboard.php" class="mt-nav-link" style="color:#f59e0b;">Admin Panel</a>
                 <?php endif; ?>
+                <?php include __DIR__ . '/partials/monthly_reset_toggle.php'; ?>
             </div>
         </div>
     </nav>
@@ -128,7 +138,7 @@ include __DIR__ . '/partials/header.php';
                     <div class="mt-stat-value">Rp <?= number_format($total_balance, 2, ',', '.'); ?></div>
                     <div class="d-flex align-items-center gap-2">
                         <span class="mt-pill" style="background: var(--mt-primary-soft); color: var(--mt-primary);">Net</span>
-                        <span class="mt-stat-sub">Total keuangan saat ini</span>
+                        <span class="mt-stat-sub"><?= $monthly_reset ? 'Saldo ' . $bulan_full[(int)date('n')] . ' ' . date('Y') : 'Total keuangan saat ini'; ?></span>
                     </div>
                 </div>
             </div>
@@ -147,7 +157,7 @@ include __DIR__ . '/partials/header.php';
                     <div class="mt-stat-value" style="color: var(--mt-income);">Rp <?= number_format($total_income, 2, ',', '.'); ?></div>
                     <div class="d-flex align-items-center gap-2 mt-stat-meta">
                         <span class="mt-pill" style="background: var(--mt-income-soft); color: var(--mt-income);"><?= $income_count; ?> Transaksi</span>
-                        <span class="mt-stat-sub">Total pemasukan</span>
+                        <span class="mt-stat-sub"><?= $monthly_reset ? 'Pemasukan bulan ini' : 'Total pemasukan'; ?></span>
                     </div>
                 </div>
             </div>
@@ -363,56 +373,213 @@ include __DIR__ . '/partials/header.php';
                         <span>Terakhir diperbarui: <?= htmlspecialchars($last_updated_label); ?></span>
                     </div>
                 </div>
-            </div>
 
-            <!-- Grafik Pengeluaran per Kategori -->
-            <div class="col-lg-4">
-                <div class="mt-card p-4 h-100">
-                    <div class="mt-section-title">Pengeluaran per Kategori</div>
-                    <div class="mt-section-sub mb-3">Komposisi alokasi dana belanja</div>
+                <!-- Ringkasan Bulanan & Tahunan (slide) -->
+                <?php
+                $netCell = function (float $net): string {
+                    $class = $net > 0 ? 'mt-amount-income' : ($net < 0 ? 'mt-amount-expense' : 'text-muted');
+                    $sign  = $net > 0 ? '+ ' : ($net < 0 ? '- ' : '');
+                    return '<span class="' . $class . '">' . $sign . 'Rp ' . number_format(abs($net), 0, ',', '.') . '</span>';
+                };
 
-                    <?php if (!empty($chartLabels)): ?>
-                        <div class="mt-donut-wrap">
-                            <canvas id="expenseChart"></canvas>
-                            <div class="mt-donut-center">
-                                <span class="mt-donut-center-label">Total</span>
-                                <span class="mt-donut-center-value">Rp <?= number_format(array_sum($chartValues), 0, ',', '.'); ?></span>
+                $m_income  = array_sum(array_column($monthly_summary, 'income'));
+                $m_expense = array_sum(array_column($monthly_summary, 'expense'));
+                $y_income  = array_sum(array_column($yearly_summary, 'income'));
+                $y_expense = array_sum(array_column($yearly_summary, 'expense'));
+                ?>
+                <div class="mt-card p-4 mt-summary-card" data-slider="summary">
+                    <div class="d-flex justify-content-between align-items-start mb-3 gap-2">
+                        <div>
+                            <div class="mt-section-title" data-slider-title>Ringkasan Bulanan</div>
+                            <div class="mt-section-sub" data-slider-sub>Tahun <?= $summary_year; ?></div>
+                        </div>
+                    </div>
+
+                    <div class="mt-slider">
+                        <div class="mt-slider-track">
+
+                            <!-- SLIDE 1: Ringkasan Bulanan -->
+                            <div class="mt-slide is-active"
+                                 data-title="Ringkasan Bulanan"
+                                 data-sub="Tahun <?= $summary_year; ?>">
+                                <div class="table-responsive">
+                                    <table class="mt-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Bulan</th>
+                                                <th>Pemasukan</th>
+                                                <th>Pengeluaran</th>
+                                                <th class="text-end">Saldo Bersih</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($monthly_summary as $m => $row): ?>
+                                                <tr style="--i: <?= $m; ?>;">
+                                                    <td><?= htmlspecialchars($row['label']); ?></td>
+                                                    <td class="<?= $row['income'] > 0 ? 'mt-amount-income' : 'text-muted'; ?>">
+                                                        <?= $row['income'] > 0 ? '+ Rp ' . number_format($row['income'], 0, ',', '.') : '-'; ?>
+                                                    </td>
+                                                    <td class="<?= $row['expense'] > 0 ? 'mt-amount-expense' : 'text-muted'; ?>">
+                                                        <?= $row['expense'] > 0 ? 'Rp ' . number_format($row['expense'], 0, ',', '.') : '-'; ?>
+                                                    </td>
+                                                    <td class="text-end"><?= $netCell($row['net']); ?></td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                            <tr class="mt-total-row" style="--i: 13;">
+                                                <td>Total <?= $summary_year; ?></td>
+                                                <td class="mt-amount-income">+ Rp <?= number_format($m_income, 0, ',', '.'); ?></td>
+                                                <td class="mt-amount-expense">Rp <?= number_format($m_expense, 0, ',', '.'); ?></td>
+                                                <td class="text-end"><?= $netCell($m_income - $m_expense); ?></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
+
+                            <!-- SLIDE 2: Ringkasan Tahunan -->
+                            <div class="mt-slide"
+                                 data-title="Ringkasan Tahunan"
+                                 data-sub="<?= $summary_year; ?> &ndash; <?= $year_end; ?>">
+                                <div class="table-responsive">
+                                    <table class="mt-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Tahun</th>
+                                                <th>Pemasukan</th>
+                                                <th>Pengeluaran</th>
+                                                <th class="text-end">Saldo Bersih</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php $n = 0; foreach ($yearly_summary as $y => $row): $n++; ?>
+                                                <tr style="--i: <?= $n; ?>;">
+                                                    <td><?= htmlspecialchars($row['label']); ?></td>
+                                                    <td class="<?= $row['income'] > 0 ? 'mt-amount-income' : 'text-muted'; ?>">
+                                                        <?= $row['income'] > 0 ? '+ Rp ' . number_format($row['income'], 0, ',', '.') : '-'; ?>
+                                                    </td>
+                                                    <td class="<?= $row['expense'] > 0 ? 'mt-amount-expense' : 'text-muted'; ?>">
+                                                        <?= $row['expense'] > 0 ? 'Rp ' . number_format($row['expense'], 0, ',', '.') : '-'; ?>
+                                                    </td>
+                                                    <td class="text-end"><?= $netCell($row['net']); ?></td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                            <tr class="mt-total-row" style="--i: 5;">
+                                                <td>Total</td>
+                                                <td class="mt-amount-income">+ Rp <?= number_format($y_income, 0, ',', '.'); ?></td>
+                                                <td class="mt-amount-expense">Rp <?= number_format($y_expense, 0, ',', '.'); ?></td>
+                                                <td class="text-end"><?= $netCell($y_income - $y_expense); ?></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="mt-slider-controls">
+                        <button type="button" data-slider-prev class="mt-slide-btn" aria-label="Sebelumnya">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                        </button>
+
+                        <div class="mt-slider-dots">
+                            <button type="button" class="mt-slider-dot is-active" data-slide-dot="0" aria-label="Slide bulanan"></button>
+                            <button type="button" class="mt-slider-dot" data-slide-dot="1" aria-label="Slide tahunan"></button>
                         </div>
 
-                        <div class="mt-legend mt-4">
-                            <?php foreach ($chartLabels as $i => $label): ?>
-                                <?php
-                                $val = $chartValues[$i];
-                                $pct = $total_chart_expense > 0 ? round(($val / $total_chart_expense) * 100, 1) : 0;
-                                $color = $mt_palette[$i % count($mt_palette)];
-                                ?>
-                                <div class="mt-legend-row">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="mt-cat-dot" style="background: <?= $color; ?>; width:10px; height:10px;"></span>
-                                        <div>
-                                            <div class="mt-legend-name"><?= htmlspecialchars($label); ?></div>
-                                            <div class="mt-legend-amount">Rp <?= number_format($val, 0, ',', '.'); ?></div>
+                        <button type="button" data-slider-next class="mt-slide-btn" aria-label="Berikutnya">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grafik Pengeluaran per Kategori (slide per bulan) -->
+            <div class="col-lg-4">
+                <div class="mt-card p-4 h-100" data-slider="category">
+                    <div class="mb-3">
+                        <div class="mt-section-title">Pengeluaran per Kategori</div>
+                        <div class="mt-section-sub" data-slider-sub><?= ($bulan_full[$cat_start_index + 1] ?? '') . ' ' . $summary_year; ?></div>
+                    </div>
+
+                    <div class="mt-slider">
+                        <div class="mt-slider-track">
+                            <?php foreach ($cat_by_month as $m => $cat): ?>
+                                <div class="mt-slide<?= ($m - 1) === $cat_start_index ? ' is-active' : ''; ?>"
+                                     data-sub="<?= $bulan_full[$m] . ' ' . $summary_year; ?>">
+
+                                    <?php if (!empty($cat['labels'])): ?>
+                                        <div class="mt-donut-wrap">
+                                            <canvas data-month="<?= $m - 1; ?>"></canvas>
+                                            <div class="mt-donut-center">
+                                                <span class="mt-donut-center-label">Total</span>
+                                                <span class="mt-donut-center-value">Rp <?= number_format($cat['total'], 0, ',', '.'); ?></span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <span class="mt-legend-pct"><?= $pct; ?>%</span>
+
+                                        <div class="mt-legend mt-4">
+                                            <?php foreach ($cat['labels'] as $i => $label): ?>
+                                                <?php
+                                                $val   = $cat['values'][$i];
+                                                $pct   = $cat['total'] > 0 ? round(($val / $cat['total']) * 100, 1) : 0;
+                                                $color = $mt_palette[$i % count($mt_palette)];
+                                                ?>
+                                                <div class="mt-legend-row" style="--i: <?= $i + 1; ?>;">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <span class="mt-cat-dot" style="background: <?= $color; ?>; width:10px; height:10px;"></span>
+                                                        <div>
+                                                            <div class="mt-legend-name"><?= htmlspecialchars($label); ?></div>
+                                                            <div class="mt-legend-amount">Rp <?= number_format($val, 0, ',', '.'); ?></div>
+                                                        </div>
+                                                    </div>
+                                                    <span class="mt-legend-pct"><?= $pct; ?>%</span>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+
+                                        <div class="mt-info-note">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                            </svg>
+                                            <span>Porsi terbesar dialokasikan untuk <?= htmlspecialchars($cat['labels'][0]); ?>.</span>
+                                        </div>
+                                    <?php else: ?>
+                                        <p class="text-muted text-center mb-0 py-5">Belum ada pengeluaran di bulan <?= $bulan_full[$m]; ?>.</p>
+                                    <?php endif; ?>
+
                                 </div>
                             <?php endforeach; ?>
                         </div>
+                    </div>
 
-                        <?php if ($top_category_name): ?>
-                            <div class="mt-info-note">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <line x1="12" y1="16" x2="12" y2="12"></line>
-                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                                </svg>
-                                <span>Porsi terbesar dialokasikan untuk <?= htmlspecialchars($top_category_name); ?>.</span>
-                            </div>
-                        <?php endif; ?>
-                    <?php else: ?>
-                        <p class="text-muted text-center mb-0 py-4">Belum ada data pengeluaran untuk ditampilkan.</p>
-                    <?php endif; ?>
+                    <div class="mt-slider-controls">
+                        <button type="button" data-slider-prev class="mt-slide-btn" aria-label="Bulan sebelumnya">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                        </button>
+
+                        <div class="mt-slider-dots mt-slider-dots-sm">
+                            <?php foreach ($cat_by_month as $m => $cat): ?>
+                                <button type="button"
+                                        class="mt-slider-dot<?= ($m - 1) === $cat_start_index ? ' is-active' : ''; ?>"
+                                        data-slide-dot="<?= $m - 1; ?>"
+                                        aria-label="<?= $bulan_full[$m]; ?>"></button>
+                            <?php endforeach; ?>
+                        </div>
+
+                        <button type="button" data-slider-next class="mt-slide-btn" aria-label="Bulan berikutnya">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -431,46 +598,12 @@ include __DIR__ . '/partials/header.php';
 
 </div>
 
-<?php if (!empty($chartLabels)): ?>
-    <!-- Chart.js dari CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script>
-        const ctx = document.getElementById('expenseChart').getContext('2d');
-
-        const chartLabels = <?= json_encode($chartLabels); ?>;
-        const chartValues = <?= json_encode($chartValues); ?>;
-        const chartColors = <?= json_encode(array_slice($mt_palette, 0, count($chartLabels))); ?>;
-
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: chartLabels,
-                datasets: [{
-                    data: chartValues,
-                    backgroundColor: chartColors,
-                    borderWidth: 0,
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                cutout: '72%',
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                const value = Number(context.raw).toLocaleString('id-ID');
-                                return context.label + ': Rp ' + value;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    </script>
-<?php endif; ?>
+<!-- Chart.js dari CDN + data grafik per bulan (dipakai slider di assets/js/app.js) -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+    window.mtCategoryData  = <?= json_encode(array_values($cat_by_month)); ?>;
+    window.mtCategoryStart = <?= (int)$cat_start_index; ?>;
+    window.mtPalette       = <?= json_encode($mt_palette); ?>;
+</script>
 
 <?php include __DIR__ . '/partials/footer.php'; ?>

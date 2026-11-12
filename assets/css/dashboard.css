@@ -813,3 +813,196 @@ select.mt-control {
 .mt-expand-icon {
   transition: transform 0.2s;
 }
+
+
+/* ---------- Ringkasan Bulanan & Tahunan (slider) ---------- */
+
+/* Slider: slide berjejer ke samping, yang belum aktif disembunyikan */
+.mt-slider {
+  overflow: hidden;
+  border-radius: var(--mt-radius-md);
+}
+
+.mt-slider-track {
+  display: flex;
+  transition: transform 0.6s cubic-bezier(0.65, 0.05, 0.36, 1);
+  will-change: transform;
+}
+
+.mt-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  opacity: 0.3;
+  transform: scale(0.96);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.mt-slide.is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Tabel: selalu muat selebar kartu, tanpa geser kanan */
+.mt-slide .table-responsive {
+  overflow-x: visible;
+}
+
+.mt-slide .mt-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.mt-total-row td {
+  font-weight: 700;
+  background: var(--mt-primary-soft);
+  border-top: 2px solid var(--mt-border);
+}
+
+/* Animasi: baris tabel muncul satu per satu saat slide aktif */
+.mt-slide.is-active tbody tr,
+.mt-slide.is-active .mt-legend-row {
+  animation: mtRowIn 0.5s ease both;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+
+@keyframes mtRowIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Kontrol di bawah: tombol panah kiri, titik di tengah, tombol panah kanan */
+.mt-slider-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.mt-slide-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--mt-border);
+  background: var(--mt-card);
+  color: var(--mt-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, opacity 0.2s;
+}
+
+.mt-slide-btn:hover:not(:disabled) {
+  background: var(--mt-primary);
+  border-color: var(--mt-primary);
+  color: #fff;
+}
+
+.mt-slide-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.mt-slider-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.mt-slider-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: var(--mt-border);
+  cursor: pointer;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+.mt-slider-dot.is-active {
+  width: 26px;
+  background: var(--mt-primary);
+}
+
+/* Layar HP: padding lebih kecil dan kolom dibagi rata */
+@media (max-width: 767.98px) {
+  .mt-summary-card {
+    padding: 1rem !important;
+  }
+
+  .mt-slide .mt-table thead th {
+    font-size: 0.62rem;
+    letter-spacing: 0.02em;
+    padding: 0 0.25rem 0.5rem;
+  }
+
+  .mt-slide .mt-table tbody td {
+    font-size: 0.72rem;
+    padding: 0.5rem 0.25rem;
+    line-height: 1.25;
+    word-break: break-word;
+  }
+
+  .mt-slide .mt-table th:nth-child(1) { width: 22%; }
+  .mt-slide .mt-table th:nth-child(n+2) { width: 26%; }
+
+  .mt-slide-btn {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* Hormati pengguna yang mematikan animasi di perangkatnya */
+@media (prefers-reduced-motion: reduce) {
+  .mt-slider-track,
+  .mt-slide {
+    transition: none;
+  }
+
+  .mt-slide.is-active tbody tr,
+  .mt-slide.is-active .mt-legend-row {
+    animation: none;
+  }
+}
+
+/* Titik indikator versi kecil (12 titik untuk 12 bulan) */
+.mt-slider-dots-sm {
+  gap: 6px;
+}
+
+.mt-slider-dots-sm .mt-slider-dot {
+  width: 6px;
+  height: 6px;
+}
+
+.mt-slider-dots-sm .mt-slider-dot.is-active {
+  width: 18px;
+}
+
+/* ---------- Saklar Reset Saldo Bulanan ---------- */
+.mt-reset-form {
+  padding: 0.25rem 0.75rem;
+}
+
+.mt-reset-form .form-check-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--mt-text);
+  cursor: pointer;
+}
+
+.mt-reset-form .form-check-input {
+  cursor: pointer;
+}
+
+.mt-reset-form .form-check-input:checked {
+  background-color: var(--mt-primary);
+  border-color: var(--mt-primary);
+}
