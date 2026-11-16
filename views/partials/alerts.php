@@ -15,6 +15,8 @@
         <div class="alert alert-warning auto-dismiss-alert">Semua riwayat transaksi berhasil dihapus!</div>
     <?php elseif ($_GET['status'] === 'cat_added'): ?>
         <div class="alert alert-success auto-dismiss-alert">Kategori baru berhasil ditambahkan!</div>
+    <?php elseif ($_GET['status'] === 'cat_deleted'): ?>
+        <div class="alert alert-warning auto-dismiss-alert">Kategori berhasil dihapus! Riwayat transaksi lama tetap aman.</div>
     <?php elseif ($_GET['status'] === 'notif_sent'): ?>
         <div class="alert alert-success auto-dismiss-alert">Notifikasi berhasil dikirim ke pengguna!</div>
     <?php elseif ($_GET['status'] === 'reset_on'): ?>

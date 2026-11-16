@@ -126,6 +126,75 @@
                         </div>
                     </form>
                 </div>
+
+                <!-- ========== Daftar & Hapus Kategori ========== -->
+                <div class="mt-card mt-form-card mt-4">
+                    <div class="mt-card-head">
+                        <span class="mt-card-icon" style="color: var(--mt-expense); background: var(--mt-expense-soft);">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                        </span>
+                        <div>
+                            <h5 class="mt-section-title">Hapus Kategori</h5>
+                            <div class="mt-section-sub">Hapus kategori buatan Anda sendiri (1 per 1)</div>
+                        </div>
+                    </div>
+
+                    <?php
+                    $current_user_id = $user_id ?? ($_SESSION['user_id'] ?? 0);
+                    $my_custom_categories = array_filter($categories ?? [], function ($c) use ($current_user_id) {
+                        return !empty($c['user_id']) && (int)$c['user_id'] === (int)$current_user_id && empty($c['is_default']);
+                    });
+                    ?>
+
+                    <?php if (!empty($my_custom_categories)): ?>
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0" style="font-size: 0.9rem;">
+                                <tbody>
+                                    <?php foreach ($my_custom_categories as $my_cat): ?>
+                                        <tr>
+                                            <td class="ps-0 py-2">
+                                                <span class="fw-semibold text-dark"><?= htmlspecialchars($my_cat['name']); ?></span>
+                                            </td>
+                                            <td class="py-2 text-center" style="width: 110px;">
+                                                <span class="mt-type-pill <?= $my_cat['type'] === 'income' ? 'mt-type-income' : 'mt-type-expense'; ?>" style="font-size: 0.75rem;">
+                                                    <?= $my_cat['type'] === 'income' ? 'Pemasukan' : 'Pengeluaran'; ?>
+                                                </span>
+                                            </td>
+                                            <td class="pe-0 py-2 text-end" style="width: 80px;">
+                                                <form action="actions/transactions/process_delete_category.php" method="POST" onsubmit="return confirm('Hapus kategori <?= htmlspecialchars(addslashes($my_cat['name'])); ?>? Riwayat transaksi lama Anda tidak akan terhapus.');" class="d-inline">
+                                                    <input type="hidden" name="category_id" value="<?= $my_cat['id']; ?>">
+                                                    <button type="submit" class="mt-btn-ghost-danger p-1" title="Hapus kategori">
+                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                        </svg>
+                                                        <span>Hapus</span>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php else: ?>
+                        <p class="text-muted small mb-0 py-2">Belum ada kategori buatan Anda sendiri yang dapat dihapus. (Kategori bawaan sistem tidak dapat dihapus).</p>
+                    <?php endif; ?>
+
+                    <div class="mt-info-note mt-3">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <span>Menghapus kategori tidak akan menghapus catatan atau riwayat transaksi lama Anda.</span>
+                    </div>
+                </div>
             </div>
 
         </div>
