@@ -41,7 +41,7 @@ include __DIR__ . '/../partials/header.php';
                             <select name="category_id" class="form-select" required>
                                 <?php foreach ($categories as $cat): ?>
                                     <option value="<?= $cat['id']; ?>" data-type="<?= htmlspecialchars($cat['type']); ?>" <?= $cat['id'] == $transaction['category_id'] ? 'selected' : ''; ?>>
-                                        <?= htmlspecialchars($cat['name']); ?> (<?= strtoupper($cat['type']); ?>)
+                                        <?= htmlspecialchars($cat['name']); ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>

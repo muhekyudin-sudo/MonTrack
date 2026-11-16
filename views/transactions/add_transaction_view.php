@@ -65,7 +65,7 @@
                                 <?php if (isset($categories) && count($categories) > 0): ?>
                                     <?php foreach ($categories as $cat): ?>
                                         <option value="<?= $cat['id']; ?>" data-type="<?= htmlspecialchars($cat['type']); ?>">
-                                            <?= htmlspecialchars($cat['name']); ?> (<?= strtoupper($cat['type']); ?>)
+                                            <?= htmlspecialchars($cat['name']); ?>
                                         </option>
                                     <?php endforeach; ?>
                                 <?php else: ?>
